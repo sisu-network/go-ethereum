@@ -124,9 +124,11 @@ func (ec *Client) getBlock(ctx context.Context, method string, args ...interface
 	if head.UncleHash != types.EmptyUncleHash && len(body.UncleHashes) == 0 {
 		return nil, fmt.Errorf("server returned empty uncle list but block header indicates uncles")
 	}
-	if head.TxHash == types.EmptyRootHash && len(body.Transactions) > 0 {
-		return nil, fmt.Errorf("server returned non-empty transaction list but block header indicates no transactions")
-	}
+	// MODIFIED: Temporarily disable this check for processing blocks with empty root hash on some chain:
+	// https://github.com/maticnetwork/bor/issues/387
+	// if head.TxHash == types.EmptyRootHash && len(body.Transactions) > 0 {
+	// 	return nil, fmt.Errorf("server returned non-empty transaction list but block header indicates no transactions")
+	// }
 	if head.TxHash != types.EmptyRootHash && len(body.Transactions) == 0 {
 		return nil, fmt.Errorf("server returned empty transaction list but block header indicates transactions")
 	}
